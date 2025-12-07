@@ -1,0 +1,31 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: USER-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bibliotheque_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# CETTE PARTIE MANQUAIT → C’EST LA CAUSE DU 500 !
+jwt:
+  secret: monSuperSecretJWT2025TresLongEtTresFort123456789
+  expiration: 86400000   # 24h en millisecondes
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
