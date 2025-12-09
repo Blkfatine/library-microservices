@@ -1,62 +1,113 @@
 import { useEffect, useState } from 'react'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement
+} from 'chart.js'
+import { Bar, Doughnut } from 'react-chartjs-2'
 import axios from 'axios'
-import { Bar, Pie, Line } from 'react-chartjs-2'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement } from 'chart.js'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement)
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement
+)
 
-export default function Dashboard() {
-    const [stats, setStats] = useState({ livres: 0, emprunts: 0, retards: 0 })
+export default function AdminDashboard() {
+    const [stats, setStats] = useState({
+        totalLivres: 0,
+        totalEmprunts: 0,
+        totalUtilisateurs: 0,
+        livresPerdus: 0
+    })
 
     useEffect(() => {
-        Promise.all([
-            axios.get('http://localhost:8080/api/books'),
-            axios.get('http://localhost:8080/api/emprunts/retards')
-        ]).then(([livresRes, retardsRes]) => {
-            setStats({
-                livres: livresRes.data.length,
-                emprunts: livresRes.data.filter(l => l.statut === 'EMPRUNTE').length,
-                retards: retardsRes.data.length
-            })
+        // Mock data fetching - replace with real API calls
+        // const fetchStats = async () => { ... }
+        setStats({
+            totalLivres: 1250,
+            totalEmprunts: 85,
+            totalUtilisateurs: 340,
+            livresPerdus: 12
         })
     }, [])
 
     const barData = {
-        labels: ['Livres totaux', 'Empruntés', 'En retard'],
-        datasets: [{
-            label: 'Statistiques',
-            data: [stats.livres, stats.emprunts, stats.retards],
-            backgroundColor: ['#3b82f6', '#10b981', '#ef4444']
-        }]
+        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+        datasets: [
+            {
+                label: 'Emprunts',
+                data: [65, 59, 80, 81, 56, 55],
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+            },
+        ],
+    }
+
+    const doughnutData = {
+        labels: ['Disponibles', 'Empruntés', 'Perdus'],
+        datasets: [
+            {
+                data: [1250 - 85 - 12, 85, 12],
+                backgroundColor: [
+                    'rgba(34, 197, 94, 0.5)',
+                    'rgba(59, 130, 246, 0.5)',
+                    'rgba(239, 68, 68, 0.5)',
+                ],
+                borderColor: [
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(239, 68, 68, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
     }
 
     return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-5xl font-bold text-center mb-12 text-primary">Dashboard Administrateur</h1>
+        <div className="min-h-screen bg-slate-50 p-8">
+            <h1 className="text-4xl font-bold text-slate-800 mb-8">Tableau de Bord Administrateur</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div className="stats shadow bg-blue-500 text-white">
-                    <div className="stat">
-                        <div className="stat-title text-white">Livres</div>
-                        <div className="stat-value">{stats.livres}</div>
-                    </div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div className="card bg-white shadow-sm p-6 border-l-4 border-blue-500">
+                    <div className="text-slate-500 text-sm uppercase font-bold">Total Livres</div>
+                    <div className="text-3xl font-bold text-slate-800">{stats.totalLivres}</div>
                 </div>
-                <div className="stats shadow bg-green-500 text-white">
-                    <div className="stat">
-                        <div className="stat-title text-white">Empruntés</div>
-                        <div className="stat-value">{stats.emprunts}</div>
-                    </div>
+                <div className="card bg-white shadow-sm p-6 border-l-4 border-green-500">
+                    <div className="text-slate-500 text-sm uppercase font-bold">Emprunts Actifs</div>
+                    <div className="text-3xl font-bold text-slate-800">{stats.totalEmprunts}</div>
                 </div>
-                <div className="stats shadow bg-red-500 text-white">
-                    <div className="stat">
-                        <div className="stat-title text-white">En retard</div>
-                        <div className="stat-value">{stats.retards}</div>
-                    </div>
+                <div className="card bg-white shadow-sm p-6 border-l-4 border-purple-500">
+                    <div className="text-slate-500 text-sm uppercase font-bold">Utilisateurs</div>
+                    <div className="text-3xl font-bold text-slate-800">{stats.totalUtilisateurs}</div>
+                </div>
+                <div className="card bg-white shadow-sm p-6 border-l-4 border-red-500">
+                    <div className="text-slate-500 text-sm uppercase font-bold">Livres Perdus</div>
+                    <div className="text-3xl font-bold text-slate-800">{stats.livresPerdus}</div>
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-2xl p-8">
-                <Bar data={barData} options={{ responsive: true }} />
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="card bg-white shadow-sm p-6">
+                    <h3 className="text-xl font-bold mb-6">Évolution des Emprunts</h3>
+                    <Bar options={{ responsive: true }} data={barData} />
+                </div>
+                <div className="card bg-white shadow-sm p-6">
+                    <h3 className="text-xl font-bold mb-6">État du Stock</h3>
+                    <div className="w-2/3 mx-auto">
+                        <Doughnut data={doughnutData} />
+                    </div>
+                </div>
             </div>
         </div>
     )

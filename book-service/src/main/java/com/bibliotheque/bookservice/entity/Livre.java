@@ -30,4 +30,22 @@ public class Livre {
     public enum StatutLivre {
         DISPONIBLE, EMPRUNTE, PERDU
     }
+
+    // Manual Getters/Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getTitre() { return titre; }
+    public void setTitre(String titre) { this.titre = titre; }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public Integer getAnnee() { return annee; }
+    public void setAnnee(Integer annee) { this.annee = annee; }
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public StatutLivre getStatut() { return statut; }
+    public void setStatut(StatutLivre statut) { this.statut = statut; }
+    public Auteur getAuteur() { return auteur; }
+    public void setAuteur(Auteur auteur) { this.auteur = auteur; }
 }

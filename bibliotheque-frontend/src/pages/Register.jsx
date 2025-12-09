@@ -12,7 +12,7 @@ export default function Register() {
         e.preventDefault()
         setError('')
         try {
-            await axios.post('http://localhost:8080/api/auth/register', {
+            await axios.post('/api/auth/register', {
                 email: form.email,
                 nom: form.nom,
                 password: form.password,
@@ -40,7 +40,7 @@ export default function Register() {
                             placeholder="Nom complet"
                             className="input input-bordered w-full mb-4"
                             value={form.nom}
-                            onChange={e => setForm({...form, nom: e.target.value})}
+                            onChange={e => setForm({ ...form, nom: e.target.value })}
                             required
                         />
                         <input
@@ -48,7 +48,7 @@ export default function Register() {
                             placeholder="Email"
                             className="input input-bordered w-full mb-4"
                             value={form.email}
-                            onChange={e => setForm({...form, email: e.target.value})}
+                            onChange={e => setForm({ ...form, email: e.target.value })}
                             required
                         />
                         <input
@@ -56,7 +56,7 @@ export default function Register() {
                             placeholder="Mot de passe"
                             className="input input-bordered w-full mb-6"
                             value={form.password}
-                            onChange={e => setForm({...form, password: e.target.value})}
+                            onChange={e => setForm({ ...form, password: e.target.value })}
                             required
                         />
                         <button type="submit" className="btn btn-primary w-full">

@@ -38,6 +38,6 @@ public class BookService {
     }
 
     public List<Livre> getRecommandations() {
-        return livreRepository.findTop10ByOrderByIdDesc(); // les 10 derniers ajoutés
+        return livreRepository.findTop10ByOrderByIdDesc();
     }
 }

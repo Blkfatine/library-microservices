@@ -1,6 +1,5 @@
 package com.bibliotheque.bookservice.controller;
 
-import com.bibliotheque.bookservice.entity.Auteur;
 import com.bibliotheque.bookservice.entity.Livre;
 import com.bibliotheque.bookservice.service.BookService;
 import jakarta.validation.Valid;
@@ -58,4 +57,3 @@ public class BookController {
         return bookService.getRecommandations();
     }
 }
-

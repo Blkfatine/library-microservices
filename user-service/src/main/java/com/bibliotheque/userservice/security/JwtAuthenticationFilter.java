@@ -29,6 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
+        // Logging for debug
+        System.out.println("JwtAuthenticationFilter check path: " + path + " Method: " + request.getMethod());
+        
         return path.startsWith("/api/auth/register") ||
                 path.startsWith("/api/auth/login") ||
                 path.equals("/api/auth/register") ||
@@ -38,6 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        System.out.println("Processing request in JwtAuthenticationFilter: " + request.getServletPath());
 
         // On ignore complètement le filtre pour register et login
         if (shouldNotFilter(request)) {

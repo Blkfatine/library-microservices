@@ -30,7 +30,13 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setNom(request.getNom());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole().equals("ADMIN") ? User.Role.ADMIN : User.Role.CLIENT);
+        
+        String role = request.getRole();
+        if (role == null || role.isEmpty()) {
+            user.setRole(User.Role.CLIENT);
+        } else {
+            user.setRole(role.equals("ADMIN") ? User.Role.ADMIN : User.Role.CLIENT);
+        }
 
         userRepository.save(user);
     }

@@ -12,11 +12,14 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post('http://localhost:8080/api/auth/login', form)
+            const res = await axios.post('/api/auth/login', form)
             login(res.data.token)
             navigate('/catalogue')
         } catch (err) {
-            setError("Identifiants incorrects")
+            console.error("Login error:", err);
+            // Display the specific error message from the server if available
+            const serverMessage = err.response?.data?.message || err.response?.data?.error || JSON.stringify(err.response?.data) || "Erreur de connexion";
+            setError(serverMessage)
         }
     }
 
@@ -25,12 +28,12 @@ export default function Login() {
             <div className="card w-96 bg-base-100 shadow-2xl">
                 <div className="card-body">
                     <h2 className="text-3xl font-bold text-center mb-8">Connexion</h2>
-                    {error && <div className="alert alert-error">{error}</div>}
+                    {error && <div className="alert alert-error break-words">{error}</div>}
                     <form onSubmit={handleSubmit}>
                         <input type="email" placeholder="Email" className="input input-bordered w-full mb-4"
-                               value={form.email} onChange={e => setForm({...form, email: e.target.value})} required />
+                            value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
                         <input type="password" placeholder="Mot de passe" className="input input-bordered w-full mb-6"
-                               value={form.password} onChange={e => setForm({...form, password: e.target.value})} required />
+                            value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
                         <button type="submit" className="btn btn-primary w-full">Se connecter</button>
                     </form>
                 </div>
