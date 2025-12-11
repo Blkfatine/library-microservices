@@ -56,8 +56,8 @@ export default function LivreDetail() {
             <div className="container mx-auto px-4 py-12 flex-grow">
                 <div className="card lg:card-side bg-white shadow-xl overflow-hidden">
                     <figure className="lg:w-1/3 bg-gray-100 relative min-h-[500px]">
-                        {livre.imageUrl ? (
-                            <img src={livre.imageUrl} alt={livre.titre} className="w-full h-full object-cover" />
+                        {livre.image_url ? (
+                            <img src={livre.image_url} alt={livre.titre} className="w-full h-full object-cover" />
                         ) : (
                             <div className="flex items-center justify-center w-full h-full text-gray-300 bg-slate-200">
                                 <span className="text-9xl">📖</span>

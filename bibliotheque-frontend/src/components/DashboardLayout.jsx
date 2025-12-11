@@ -14,8 +14,7 @@ export default function DashboardLayout() {
             <aside className="w-64 bg-white shadow-xl hidden md:flex flex-col z-10">
                 <div className="p-6 border-b border-slate-100">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">B</div>
-                        <span className="text-xl font-bold text-slate-800">Bibliovox</span>
+                        <span className="text-xl font-bold text-slate-800">ReadWaves</span>
                     </Link>
                 </div>
 
@@ -54,7 +53,7 @@ export default function DashboardLayout() {
             {/* Main Content */}
             <main className="flex-grow overflow-y-auto">
                 <div className="md:hidden bg-white p-4 shadow-sm flex items-center justify-between sticky top-0 z-20">
-                    <Link to="/" className="font-bold text-lg">Bibliovox</Link>
+                    <Link to="/" className="font-bold text-lg">ReadWaves</Link>
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>

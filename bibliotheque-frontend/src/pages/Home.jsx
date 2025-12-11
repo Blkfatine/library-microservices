@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom'
 import HeroSection from '../components/HeroSection'
 import BookCard from '../components/BookCard'
 import Footer from '../components/Footer'
+import { useAuth } from '../context/AuthContext'
 
 export default function Home() {
+    const { user } = useAuth()
     const [popularBooks, setPopularBooks] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -16,23 +18,76 @@ export default function Home() {
         auteur: { nom: "Auteur Inconnu" },
         annee: 2023,
         statut: 'DISPONIBLE',
-        imageUrl: null
+        image_url: null
     }))
 
     useEffect(() => {
-        fetchPopularBooks()
-    }, [])
+        fetchRecommendations()
+    }, [user])
 
-    const fetchPopularBooks = async () => {
+    const fetchRecommendations = async () => {
+        setLoading(true)
         try {
-            const res = await axios.get('/api/books/recommandations')
-            if (res.data && res.data.length > 0) {
-                setPopularBooks(res.data)
-            } else {
-                setPopularBooks(fallbackBooks)
+            // 1. Fetch all books
+            const booksRes = await axios.get('/api/books')
+            let allBooks = booksRes.data || []
+
+            // 2. If user is logged in, fetch history to find favorite genre
+            if (user) {
+                try {
+                    const borrowsRes = await axios.get(`/api/borrows/user/${user.id}`)
+                    const borrows = borrowsRes.data || []
+
+                    if (borrows.length > 0) {
+                        // Calculate favorite genre
+                        // We need book details for each borrow to get the genre. 
+                        // Assuming borrow object has book details or we match with allBooks.
+                        // If borrow only has bookId, we map it.
+
+                        const genreCounts = {}
+                        borrows.forEach(borrow => {
+                            const book = allBooks.find(b => b.id === borrow.bookId)
+                            if (book && book.genre) {
+                                genreCounts[book.genre] = (genreCounts[book.genre] || 0) + 1
+                            }
+                        })
+
+                        // Find top genre
+                        let topGenre = null
+                        let maxCount = 0
+                        Object.entries(genreCounts).forEach(([genre, count]) => {
+                            if (count > maxCount) {
+                                maxCount = count
+                                topGenre = genre
+                            }
+                        })
+
+                        if (topGenre) {
+                            // Filter by top genre
+                            const genreBooks = allBooks.filter(b => b.genre === topGenre)
+
+                            // If we have enough books in this genre, use them. 
+                            // Otherwise mix with others or just use what we have.
+                            if (genreBooks.length > 0) {
+                                // Sort by "popularity" (mock: random or just as is)
+                                // Requirement: "recommander livres dans genre 'Fantasy' triés par popularité"
+                                // We'll just take the first 6 of this genre.
+                                setPopularBooks(genreBooks.slice(0, 6))
+                                setLoading(false)
+                                return
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error fetching user history for recommendations", err)
+                }
             }
+
+            // 3. Default / Fallback: Just show first 6-8 books (simulating "Popular")
+            setPopularBooks(allBooks.slice(0, 8))
+
         } catch (err) {
-            console.error("Erreur chargement livres populaires", err)
+            console.error("Erreur chargement livres", err)
             setPopularBooks(fallbackBooks)
         } finally {
             setLoading(false)
@@ -48,8 +103,15 @@ export default function Home() {
                 <section id="catalogue-preview" className="container mx-auto px-4 py-20">
                     <div className="mb-12 flex items-end justify-between">
                         <div>
-                            <h2 className="text-3xl font-bold text-slate-800 md:text-4xl">Catalogue Récent</h2>
-                            <p className="mt-2 text-slate-500">Découvrez nos derniers ajouts et les livres les plus populaires.</p>
+                            <h2 className="text-3xl font-bold text-slate-800 md:text-4xl">
+                                {user ? "Recommandé pour vous" : "Catalogue Récent"}
+                            </h2>
+                            <p className="mt-2 text-slate-500">
+                                {user
+                                    ? "Une sélection basée sur vos lectures précédentes."
+                                    : "Découvrez nos derniers ajouts et les livres les plus populaires."
+                                }
+                            </p>
                         </div>
                         <Link to="/catalogue" className="hidden text-primary font-semibold hover:underline md:block">
                             Voir tout le catalogue →

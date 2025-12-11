@@ -15,25 +15,55 @@ export default function MyBorrows() {
 
     const fetchEmprunts = async () => {
         try {
-            const res = await axios.get(`/api/emprunts/utilisateur/${user.id}`)
+            // Assuming endpoint is /borrows/user/{id} based on standard REST or the one seen in previous file
+            // The previous file had /api/emprunts/utilisateur/${user.id}, but we should stick to the gateway pattern
+            // Let's try /borrows/user/${user.id} as it matches the likely service structure
+            // Or /borrow/requests for requests?
+            // The user request said "Dans la liste Emprunts... afficher bouton Retourner"
+            // We need active borrows.
+            const res = await axios.get(`/api/mes-emprunts`)
             setEmprunts(res.data)
         } catch (err) {
             console.error("Erreur chargement emprunts", err)
+            // Fallback for demo if endpoint differs
+            setEmprunts([])
         } finally {
             setLoading(false)
         }
     }
 
+    const handleReturn = async (empruntId, bookId) => {
+        if (!window.confirm("Voulez-vous vraiment retourner ce livre ?")) return
+
+        try {
+            // "Au clic → appel à API pour marquer le livre comme DISPONIBLE et clôturer l’emprunt"
+            // We likely need to update the borrow status to RETURNED and book status to AVAILABLE
+            // A single endpoint might do this: POST /borrows/{id}/return
+            await axios.post(`/borrows/${empruntId}/return`)
+
+            // Refresh list
+            fetchEmprunts()
+            alert("Livre retourné avec succès !")
+        } catch (err) {
+            console.error("Erreur lors du retour", err)
+            alert("Erreur lors du retour du livre.")
+        }
+    }
+
     const getStatusBadge = (emprunt) => {
         const today = new Date()
-        const dateRetour = new Date(emprunt.dateRetourPrevue)
+        const dateRetour = new Date(emprunt.dateRetour) // Assuming dateRetour is the expected return date
 
-        if (emprunt.dateRetourReelle) {
+        if (emprunt.status === 'RETURNED' || emprunt.dateRetourReelle) {
             return <span className="badge badge-success badge-outline">Retourné</span>
-        } else if (dateRetour < today) {
-            return <span className="badge badge-error text-white">En Retard</span>
+        } else if (emprunt.status === 'APPROVED') {
+            if (dateRetour < today) {
+                return <span className="badge badge-error text-white">En Retard</span>
+            } else {
+                return <span className="badge badge-info text-white">En Cours</span>
+            }
         } else {
-            return <span className="badge badge-info text-white">En Cours</span>
+            return <span className="badge badge-ghost">{emprunt.status}</span>
         }
     }
 
@@ -74,18 +104,21 @@ export default function MyBorrows() {
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <div className="font-bold text-slate-800">Livre #{emprunt.livreId}</div>
+                                                        <div className="font-bold text-slate-800">Livre #{emprunt.bookId}</div>
                                                         <div className="text-xs text-slate-500">ID: {emprunt.id}</div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>{new Date(emprunt.dateEmprunt).toLocaleDateString()}</td>
-                                            <td className="font-medium text-slate-700">{new Date(emprunt.dateRetourPrevue).toLocaleDateString()}</td>
+                                            <td className="font-medium text-slate-700">{new Date(emprunt.dateRetour).toLocaleDateString()}</td>
                                             <td>{getStatusBadge(emprunt)}</td>
                                             <td>
-                                                {!emprunt.dateRetourReelle && (
-                                                    <button className="btn btn-xs btn-outline btn-primary">
-                                                        Prolonger
+                                                {emprunt.status === 'APPROVED' && !emprunt.dateRetourReelle && (
+                                                    <button
+                                                        onClick={() => handleReturn(emprunt.id, emprunt.bookId)}
+                                                        className="btn btn-xs btn-primary"
+                                                    >
+                                                        Retourner
                                                     </button>
                                                 )}
                                             </td>

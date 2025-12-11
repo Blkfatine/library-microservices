@@ -19,6 +19,7 @@ public class Livre {
     private String description;
     private Integer annee;
     private String isbn;
+    private String image_url;
 
     @Enumerated(EnumType.STRING)
     private StatutLivre statut = StatutLivre.DISPONIBLE;
@@ -44,6 +45,8 @@ public class Livre {
     public void setAnnee(Integer annee) { this.annee = annee; }
     public String getIsbn() { return isbn; }
     public void setIsbn(String isbn) { this.isbn = isbn; }
+    public String getImage_url() { return image_url; }
+    public void setImage_url(String image_url) { this.image_url = image_url; }
     public StatutLivre getStatut() { return statut; }
     public void setStatut(StatutLivre statut) { this.statut = statut; }
     public Auteur getAuteur() { return auteur; }

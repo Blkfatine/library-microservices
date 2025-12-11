@@ -11,6 +11,9 @@ import Notifications from './pages/Notifications'
 import Recommendations from './pages/Recommendations'
 import Navbar from './components/Navbar'
 import AdminDashboard from './pages/admin/Dashboard'
+import AdminLayout from './components/AdminLayout'
+import BooksManager from './pages/admin/BooksManager'
+import UsersManager from './pages/admin/UsersManager'
 import { AuthProvider } from './context/AuthContext'
 
 // Wrapper for public pages that need the main Navbar
@@ -42,7 +45,11 @@ function App() {
                     </Route>
 
                     {/* Admin Routes */}
-                    <Route path="/admin/dashboard" element={<PublicLayout><AdminDashboard /></PublicLayout>} />
+                    <Route path="/admin" element={<AdminLayout />}>
+                        <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route path="books" element={<BooksManager />} />
+                        <Route path="users" element={<UsersManager />} />
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

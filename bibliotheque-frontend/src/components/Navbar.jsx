@@ -21,8 +21,8 @@ export default function Navbar() {
 
     // Dynamic classes based on scroll and page
     const navbarClasses = `fixed top-0 z-50 w-full transition-all duration-300 ${scrolled || !isHome
-            ? 'bg-white/80 backdrop-blur-md shadow-md text-slate-800 py-3'
-            : 'bg-transparent text-white py-5'
+        ? 'bg-white/80 backdrop-blur-md shadow-md text-slate-800 py-3'
+        : 'bg-transparent text-white py-5'
         }`
 
     return (
@@ -30,11 +30,8 @@ export default function Navbar() {
             <div className="container mx-auto px-6 flex items-center justify-between">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 group">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${scrolled || !isHome ? 'bg-primary text-white' : 'bg-white text-primary'}`}>
-                        <span className="font-bold text-xl">B</span>
-                    </div>
                     <span className="text-xl font-bold tracking-tight group-hover:opacity-80 transition-opacity">
-                        Bibliovox
+                        ReadWaves
                     </span>
                 </Link>
 
